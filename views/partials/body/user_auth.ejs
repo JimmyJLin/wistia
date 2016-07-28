@@ -1,0 +1,214 @@
+<div ng-app="masterclassApp">
+<div ng-controller="SignInCtrl">
+<form class="form-horizontal" id="signin" name="form" novalidate="novalidate" role="form">
+  <div aria-labelledby="myModalLabel" class="modal fade auth" id="modal_sign_form" role="dialog" style="display: none;" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button alt="Close dialog" aria-label="close modal" class="close" data-dismiss="modal" type="button"></button>
+          <p class="modal-title" id="myModalLabel">Sign in</p>
+        </div>
+        <div class="modal-body">
+          <button class="modal-button signup_fb" id="sign_in_fb" ng-click="signInViaFb()" role="button" tabindex="0" type="button">
+            <p class="desky">Sign in with Facebook</p><p class="mobi">Sign in</p>
+          </button>
+          <p>MasterClass  will never post on your behalf.</p>
+          <p class="or">OR</p>
+          <div class="email custom_input">
+            <label class="screenreader" for="email_input">Your email:</label>
+            <input class="email_input" id="email_input" name="auth_key" ng-change="serverEmailError=null" ng-model="email" ng-model-options="{ updateOn: &#39;blur&#39; }" placeholder="Email" required="required" type="email" />
+            <div ng-show="form.auth_key.$error.email || serverEmailError">
+              <span class="caution" ng-show="form.auth_key.$error.email || serverEmailError"></span>
+              <div class="error_tooltip">
+                <span ng-show="form.auth_key.$error.email">Please enter a valid email address.</span>
+                <span ng-bind="serverEmailError" ng-show="!form.auth_key.$error.email &amp;&amp; serverEmailError"></span>
+              </div>
+            </div>
+          </div>
+          <div class="password custom_input">
+            <label class="screenreader" for="password_input">Enter your password:</label>
+            <input class="pw_input" id="password_input" name="password" ng-model="password" placeholder="Password" type="password" />
+            <div ng-show="passwordMismatch">
+              <span class="caution"></span>
+              <div class="error_tooltip">This password doesn&#39;t match.
+                <a class="tt-forgot" data-dismiss="modal" data-target="#modal_send_email_form" data-toggle="modal" href="">Forgot password?</a>
+              </div>
+            </div>
+          </div>
+          <p id="sign-up-forgot-password">Forgot password?
+            <a class="forgot" data-dismiss="modal" data-target="#modal_send_email_form" data-toggle="modal" href="#"> Send a reset email.</a>
+          </p>
+          <button class="modal-button create" id="sign_in" ng-class="(form.$dirty &amp;&amp; form.$valid) ? &#39;&#39; : &#39;disabled&#39;" ng-click="form.$dirty &amp;&amp; form.$valid &amp;&amp; submit()" type="submit">
+            <p>Sign in</p>
+          </button>
+          <p class="button_desc">Need an account?
+            <a class="create-account" data-dismiss="modal" data-target="#modal_create_form" data-toggle="modal" href="#">Create an account.</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+</div>
+
+<div ng-controller="SignUpCtrl">
+<form class="form-horizontal" id="create_account" name="form" novalidate="novalidate" role="form">
+  <div aria-labelledby="myModalLabel" class="modal fade auth" data-backdrop="true" id="modal_create_form" role="dialog" tabindex="-1"><div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button alt="Close dialog" aria-label="close modal" class="close" data-dismiss="modal" type="button"></button>
+        <p class="modal-title" id="myModalLabel">Create An Account</p>
+      </div>
+      <div class="modal-body">
+        <button class="modal-button signup_fb" ng-click="signUpViaFb()" type="button">
+          <p class="desky">Sign up with Facebook</p>
+          <p class="mobi">Sign in</p>
+        </button>
+        <p>MasterClass will never post on your behalf.</p>
+        <p class="or">OR</p>
+        <div class="email custom_input">
+          <label class="screenreader" for="create-account-email">Your email:</label>
+          <input class="email_input" id="create-account-email" name="email" ng-change="serverEmailError=null" ng-model="email" ng-model-options="{ updateOn: &#39;blur&#39; }" placeholder="Email" required="required" type="email" value="" />
+          <div ng-show="form.email.$error.email || serverEmailError">
+            <span class="caution"></span>
+            <div class="error_tooltip">
+              <span ng-show="form.email.$error.email">Please enter a valid email address.</span>
+              <span ng-bind="serverEmailError" ng-show="!form.email.$error.email &amp;&amp; serverEmailError"></span>
+            </div>
+          </div>
+        </div>
+        <div class="password custom_input">
+          <label class="screenreader" for="create-account-password">Enter your password:</label>
+          <input class="pw_input" id="create-account-password" name="password" ng-change="serverPasswordError = null" ng-model="password" placeholder="Password" required="required" type="password" />
+          <div ng-show="form.password.$error.mismatch || serverPasswordError ">
+            <span class="caution"></span>
+            <div class="error_tooltip">
+              <span ng-show="form.password.$error.mismatch">This password doesn&#39;t match.</span>
+              <span ng-bind="serverPasswordError" ng-show="!form.password.$error.mismatch &amp;&amp; serverPasswordError"></span>
+            </div>
+          </div>
+        </div>
+        <button class="modal-button create" id="create-account-submit" ng-class="(form.$dirty &amp;&amp; form.$valid) ? &#39;&#39; : &#39;disabled&#39;" ng-click="form.$dirty &amp;&amp; form.$valid &amp;&amp; submit()" ng-disabled="processing" type="submit">
+          <p>Create Account</p>
+        </button>
+        <p class="button_desc">Already have an account?
+          <span data-dismiss="modal" data-target="#modal_sign_form" data-toggle="modal">Sign In</span>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+</form>
+</div>
+
+<div ng-controller="ResetPasswordCtrl">
+<form class="form-horizontal" id="send_email" name="form" role="form">
+  <div aria-hidden="true" aria-labelledby="myModalLabel" class="modal fade auth" id="modal_send_email_form" role="dialog" style="display: none;" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button aria-hidden="true" class="close" data-dismiss="modal" type="button"></button>
+          <p class="modal-title">Reset your password</p>
+        </div>
+        <div class="modal-body">
+          <div class="email custom_input">
+            <input name="email" ng-model="email" placeholder="Email" required="required" type="email" />
+            <div ng-show="form.email.$error.email">
+              <span class="caution"></span>
+              <div class="error_tooltip">
+                Please enter a valid email address.
+              </div>
+            </div>
+          </div>
+          <button class="modal-button create" ng-class="(form.$dirty &amp;&amp; form.$valid) ? &#39;&#39; : &#39;disabled&#39;" ng-click="form.$valid &amp;&amp; submit()" type="submit">
+            <p>Send email</p>
+          </button>
+          <p class="button_desc">
+            Remember your password?
+            <span data-dismiss="modal" data-target="#modal_sign_form" data-toggle="modal">
+              Sign in.
+            </span>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+
+
+<form action="#" class="form-horizontal" id="reset_password" method="post" role="form">
+  <!--Button trigger modal-->
+  <div data-target="#resetpassword_form" data-toggle="modal" id="resetpassword_button">
+  </div>
+  <!--Modal-->
+  <div aria-hidden="true" aria-labelledby="myModalLabel" class="modal fade auth" id="resetpassword_form" role="dialog" style="display: none;" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button aria-hidden="true" class="close" data-dismiss="modal" type="button"></button>
+          <p class="modal-title" id="myModalLabel">Reset Email Sent</p>
+        </div>
+        <div class="modal-body">
+          <div class="reset_check"></div>
+          <p>Check your inbox for a link to reset your password.</p>
+          <br />
+          <br />
+          <p class="button_desc">Remember your password?<span>Sign in.</span></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+
+<div aria-hidden="true" aria-labelledby="myModalLabel" class="modal fade auth" id="modal_confirmpassword_form" role="dialog" style="display: none;" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button aria-hidden="true" class="close" data-dismiss="modal" type="button"></button>
+        <p class="modal-title" id="myModalLabel">Reset email sent</p>
+      </div>
+      <div class="modal-body">
+        <span class="confirmation-checkmark-svg"></span>
+        <p class="password-confirmation-body-text centered" id="password-confirmation-message">
+          If there is an account connected to the email {{ email }}, you will receive a reset email immediately. If there is no account attached to {{ email }}, you can create one here:
+          <br />
+          <a data-dismiss="modal" data-target="#modal_create_form" data-toggle="modal" href="#">
+            Create an account
+          </a>
+        </p>
+        <p class="password-confirmation-body-text centered">
+          Remember your password?
+          <a data-dismiss="modal" data-target="#modal_sign_form" data-toggle="modal" href="#" id="modal-confirm-password-remembered">
+            Sign in.
+          </a>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div aria-hidden="true" aria-labelledby="myModalLabel" class="modal fade auth" id="failure_modal" role="dialog" style="display: none;" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button aria-hidden="true" class="close" data-dismiss="modal" type="button"></button>
+        <p class="modal-title" id="myModalLabel">Whoops</p>
+      </div>
+
+      <div class="modal-body">
+        <span class="mc-orange-alert"></span>
+        <p class="password-confirmation-body-text centered" id="password-failure-message"></p>
+        <p class="password-confirmation-body-text centered">
+          Remember your password?
+          <a data-dismiss="modal" data-target="#modal_sign_form" data-toggle="modal" href="">
+            Sign in.
+          </a>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+</div>
